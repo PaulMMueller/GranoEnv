@@ -18,15 +18,72 @@ import random
 class granovetter:
     
     def __init__(
-            self,number_of_nodes,average_degree,
-            upper_social_threshold, lower_social_threshold,
-            upper_pollution_threshold, lower_pollution_threshold, 
-            time_horizon, vulnerability, farsightness,
-            delta_t, integration_time, 
+            self,number_of_nodes=200,average_degree=10,
+            upper_social_threshold=0.6, lower_social_threshold=0.5,
+            upper_pollution_threshold=0.4, lower_pollution_threshold=0.3, 
+            time_horizon=1000, vulnerability=0.1, farsightness=10,
+            delta_t=1e-4, integration_time=10, 
             initial_pollution = 0, initial_average_activity = 0,
             model='ER',small_worldness_parameter = 1,
-            verbose = False):
+            verbose = True):
+        '''
 
+        Parameters
+        ----------
+        number_of_nodes : Integer, optional
+            Number of nodes of the network of agents. 
+            The default is 200.
+        average_degree : Float, optional
+            Average number of idrect neighbours the agents have. Has to be an even integer if the WS model is used.
+            The default is 10.
+        upper_social_threshold : Float, optional
+            Upper social threshold.
+            The default is 0.6.
+        lower_social_threshold : Float, optional
+            Lower social threshold.
+            The default is 0.5.
+        upper_pollution_threshold : Float, optional
+            Upper pollution threshold.
+            The default is 0.4.
+        lower_pollution_threshold : Float, optional
+            Lower pollution threshold. The default is 0.3.
+        time_horizon : Float, optional
+            Anticipation time up to which the agents evaluate the future.
+            The default is 1000.
+        vulnerability : Float, optional
+            Weight for the action due to direct environmental impacts.
+            The default is 0.1.
+        farsightness : Float, optional
+            Weight for the action due to social contagion and anticipated environmental impacts.
+            The default is 10.
+        delta_t : Float, optional
+            Time step width.
+            The default is 1e-4.
+        integration_time : Float, optional
+            Time up to which the model is integrated. Can be changed before the model is evolved in time.
+            The default is 10.
+        initial_pollution : Float, optional
+            Initial value of the pollution. The default is 0.
+        initial_average_activity : Float, optional
+            Initial share of active agents. Will be rounded to fit a possible value for the given network.
+            The default is 0.
+        model : String, optional
+            Network constrcution method.  Either Eros-Renyi 'ER' or Watts-Strogatz 'WS'.
+            The default is 'ER'.
+        small_worldness_parameter : Float, optional
+            Rewiring probability for the Watts-Storgatz model. Will be ignored if the model is ER.
+            The default is 1.
+        verbose : Bool, optional
+            Determines if every time step is printed. 
+            The default is True.
+
+
+        Returns
+        -------
+        None.
+
+        '''
+        print('Initialize GranoEnv Instance')
         # Model properties
         self.upper_social_threshold = upper_social_threshold       
         self.lower_social_threshold = lower_social_threshold
@@ -55,10 +112,12 @@ class granovetter:
         if self.model == 'ER':
             self.__make_ER_network()
         elif self.model == 'WS':
-            self.__make_WS_network()
+            if int(self.average_degree)%2!=0:
+                raise Exception('Average degree has to be an even integer if WS model is used.')
+            else:
+                self.__make_WS_network()
         else:
-            print('Invalid network model.')
-            exit()
+            raise Exception('Invalid network model.')
         # Outcome preparation
         self.pollution = initial_pollution
         self.average_activity = self.get_average_activity()
@@ -88,9 +147,9 @@ class granovetter:
         link_probability = self.average_degree/(self.number_of_nodes-1)
         self.network = nx.erdos_renyi_graph(n=self.number_of_nodes,p =link_probability)
         for i in range(self.number_of_nodes):
-            self.network.node[i]['activity'] = False 
+            self.network.nodes()[i]['activity'] = False 
         for i in self.__make_initial_active_nodes():
-            self.network.node[i]['activity'] = True
+            self.network.nodes()[i]['activity'] = True
             
     def __make_WS_network(self):
         '''Initiate the Watts-Strogatz type network
@@ -98,11 +157,11 @@ class granovetter:
         self.network = nx.watts_strogatz_graph(n=self.number_of_nodes, k=self.average_degree,
                                                          p = self.small_worldness_parameter)
         for i in range(self.number_of_nodes):
-            self.network.node[i]['activity'] = False 
+            self.network.nodes()[i]['activity'] = False 
 
 
         for i in self.__make_initial_active_nodes():
-            self.network.node[i]['activity'] = True
+            self.network.nodes()[i]['activity'] = True
          
       
         
@@ -206,10 +265,10 @@ class granovetter:
             for i in range(0,self.number_of_nodes):        
                 if self.__get_change_of_activity(change_probabilities[i]):
                     self.node_change_list.append(i)
-                    if self.network.node[i]['activity']:
-                         self.network.node[i]['activity'] = False
+                    if self.network.nodes()[i]['activity']:
+                         self.network.nodes()[i]['activity'] = False
                     else:
-                        self.network.node[i]['activity'] = True
+                        self.network.nodes()[i]['activity'] = True
 
             #Update the data 
             self.average_activity = self.get_average_activity()
