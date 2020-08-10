@@ -64,11 +64,14 @@ Time Horizon: {th}
 Lifetime of the ecological dynamics: {tau}
 Step Size: {dt}
 Integration Time: {it}
+
+Initial Average Inactivity: {X0}
+Initial Pollution: {Y0}
 ''')
 
 print(f'''
-Time,    Pollution, Average Activity\n
-{T[0]:.{time_precision}f}, {Y0:.6f}, {X0:.6f}''')
+Time,     Average Inactivity, Pollution,\n
+{T[0]:.{time_precision}f}, {X0:.6f}, {Y0:.6f}''')
 
 
 
@@ -131,7 +134,7 @@ def make_dir(dir_name):
         
         
 
-
+last_printed_time_step = 0
 x = X0
 y = Y0
 for t in T[1:]:
@@ -175,10 +178,16 @@ for t in T[1:]:
 
     der_X = np.abs(printed_X[-1]-x)
     der_Y = np.abs(printed_Y[-1]-y)
+    
     if (der_X>=prec) or (der_Y >= prec):
+        last_printed_time_step = t
         x_new ,y_new = eval_fct(X0,Y0,C=C,D=D,t = t-t1)
+        #print(eval_fct(X0,Y0,C=C,D=D,t = t-t1),X0,Y0,C,D,t-t1)
+        #print(eval_fct,y_dot)
         printed_X.append(x_new)
         printed_Y.append(y_new)
-        print(f'{t:.{time_precision}f}, {y_new:.4f}, {x_new:.4f}')
+        print(f'{t:.{time_precision}f}, {x_new:.6f}, {y_new:.6f}')
+if  last_printed_time_step != T[-1]:
+    print(f'{t:.{time_precision}f}, {x:.6f}, {y:.6f}')
     
-print(f'===CalculationEnded===')
+print(f'===CalculationEnded===')   
