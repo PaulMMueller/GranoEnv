@@ -101,6 +101,7 @@ class granovetter:
         self.initial_average_inactivity = initial_average_inactivity
         # Time evolution properties
         self.delta_t = delta_t
+        self.time_precision = int(np.log10(1/delta_t))
         self.integration_time = integration_time
         self.time_steps = int(self.integration_time/self.delta_t) # Convert integartion time with step width to the number of time_steps
         
@@ -138,7 +139,7 @@ class granovetter:
         ''' Draw random initial active nodes
         '''
         number_of_initial_inactive_nodes = int(np.round(self.initial_average_inactivity*self.number_of_nodes))
-        self.initial_inactive_list = random.sample(range(0,self.number_of_nodes),number_of_initial_inactive_nodes) 
+        self.initial_inactive_list = sorted(random.sample(range(0,self.number_of_nodes),number_of_initial_inactive_nodes))
         
         return self.initial_inactive_list
     
@@ -303,11 +304,11 @@ Rewiring probability (only WS): {self.small_worldness_parameter}\n''')
         print(f'Inactive_node_list: {self.initial_inactive_list}')
         print(f'Adjacency matrix: {self.get_adjacency_matrix()}\n')
 
-        print('Time, Pollution, Average Inactivity, Changing nodes')
-        print(f'{self.time},{self.pollution},{self.average_inactivity}, {self.node_change_list}') 
+        print('Time, Average Inactivity, Pollution,  Changing nodes')
+        print(f'{self.time:.{self.time_precision}f}, {self.average_inactivity:.6f}, {self.pollution:.6f}, {self.node_change_list}') 
         
     def print_time_step(self):
-        print(f'{self.time},{self.pollution},{self.average_inactivity},{self.node_change_list}')
+        print(f'{self.time:.{self.time_precision}f}, {self.average_inactivity:.6f}, {self.pollution:.6f}, {self.node_change_list}')
         self.node_change_list = [] # Resets the node change list. Is importanted to be done here due to the sparse data.
 
             

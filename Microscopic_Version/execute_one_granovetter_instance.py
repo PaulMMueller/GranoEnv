@@ -32,7 +32,7 @@ time_horizon = float(input_parameters[5])
 tau = float(input_parameters[6])
 
 delta_t = float(input_parameters[7])
-integration_time = int(input_parameters[8])
+integration_time = float(input_parameters[8])
 
 initial_pollution = float(input_parameters[9])
 initial_average_inactivity = float(input_parameters[10])
