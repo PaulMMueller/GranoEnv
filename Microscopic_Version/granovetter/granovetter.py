@@ -23,9 +23,9 @@ class granovetter:
             vulnerability=0.1, farsightness=10, time_horizon=1000,
             tau = 1,
             delta_t=1e-4, integration_time=10, 
-            initial_pollution = 0, initial_average_inactivity = 0,
+            initial_pollution = 0.0, initial_average_inactivity = 0.0,
             number_of_nodes=200,average_degree=10,
-            model='ER',small_worldness_parameter = 1,
+            model='ER',small_worldness_parameter = 1.0,
             verbose = True):
         '''
 
@@ -296,7 +296,7 @@ Initial_Average_Inactivity {self.initial_average_inactivity}
 Model: {self.model}
 Nodes: {self.number_of_nodes}
 Average Degree: {self.average_degree}
-Rewiring probability (only WS): {self.small_worldness_parameter}n''')
+Rewiring probability (only WS): {self.small_worldness_parameter}\n''')
         self.get_average_shortest_path_length()
         self.get_clustering_coefficient()
         self.get_connectivity()
