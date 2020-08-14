@@ -63,7 +63,7 @@ save_name = 'micro_paper_case3_01'#'test'#'network_size'
 
 ####
 
-approx_calc_length = 40
+approx_calc_length = 900
 varying_param = [0]
 j = 1
 for v in varying_param:

@@ -23,7 +23,7 @@ class granovetter:
             vulnerability=0.1, farsightness=10, time_horizon=1000,
             tau = 1,
             delta_t=1e-4, integration_time=10, 
-            initial_pollution = 0.0, initial_average_inactivity = 0.0,
+            initial_average_inactivity = 0.0, initial_pollution = 0.0, 
             number_of_nodes=200,average_degree=10,
             model='ER',small_worldness_parameter = 1.0,
             verbose = True):
@@ -291,8 +291,8 @@ Lifetime of the ecological dynamics: {self.tau}
 Step Size: {self.delta_t}
 Integration Time: {self.integration_time}
 
-Initial_Pollution: {self.initial_pollution}
-Initial_Average_Inactivity {self.initial_average_inactivity}
+Initial Pollution: {self.initial_pollution}
+Initial Average Inactivity: {self.initial_average_inactivity}
 
 Model: {self.model}
 Nodes: {self.number_of_nodes}

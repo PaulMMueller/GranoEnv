@@ -59,11 +59,11 @@ number_of_random_pairs = len(rands)#  Has to be checked if correct file is linke
 delta_t = 1e-4#/time_scaler#/number_of_nodes
 integration_time = 20
 
-save_name = 'micro_paper_cas1_02'#'test'#'network_size'
+save_name = 'micro_paper_case2_01'#'test'#'network_size'
 
 ####
 
-approx_calc_length = 40
+approx_calc_length = 900
 varying_param = [0]
 j = 1
 for v in varying_param:
