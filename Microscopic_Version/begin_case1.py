@@ -50,7 +50,7 @@ vulnerability = 0
 farsightness = 1e1
 time_horizon = 0
 tau = 1e6
-rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_101_diff_inact_Y0_1.npy'#random_pairs_1000.npy'
+rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_21x21.npy'
 rands = np.load(rand_file)
 number_of_random_pairs = len(rands)#  Has to be checked if correct file is linked
 
@@ -59,7 +59,7 @@ number_of_random_pairs = len(rands)#  Has to be checked if correct file is linke
 delta_t = 1e-4#/time_scaler#/number_of_nodes
 integration_time = 20
 
-save_name = 'micro_paper_case1_01'#'test'#'network_size'
+save_name = 'micro_paper_case1_21x21_01'#'test'#'network_size'
 
 ####
 
@@ -69,7 +69,7 @@ j = 1
 for v in varying_param:
     
     
-    chuncks = 1 + (number_of_random_pairs*approx_calc_length)//(7200) # Every chun7200ck should run about 2 hours
+    chuncks = 1 + (number_of_random_pairs*approx_calc_length)//(10*3600) # Divided by hours times second in an hour
 
     start_end_ini = []
     for i in range(0,chuncks):  # Make an array of how many blocks of codes should be submitted and what they should have in them

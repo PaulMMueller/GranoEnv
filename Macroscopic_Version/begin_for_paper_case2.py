@@ -46,7 +46,7 @@ farsightness = 1e1
 time_horizon = 0
 tau = 1e0
 
-rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_101_diff_inact_Y0_1.npy'#random_pairs_1000.npy'
+rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_41x41_grid.npy'#random_pairs_1000.npy'
 rands = np.load(rand_file)
 number_of_random_pairs = len(rands)#  Has to be checked if correct file is linked
 
@@ -55,13 +55,13 @@ number_of_random_pairs = len(rands)#  Has to be checked if correct file is linke
 delta_t = 1e-4#/time_scaler#/number_of_nodes
 integration_time = 20
 
-save_name = 'ana_paper_case2_02'#'Ana_test_N__th_1000'#'test'#'network_size'
+save_name = 'ana_paper_case2_41x41_01'#'Ana_test_N__th_1000'#'test'#'network_size'
 ####
 
 
 
 varying_param = [20]#,50,100,200]#,500,1000]
-approx_calc_length = 200
+approx_calc_length = 40
 j = 1
 for v in varying_param:
     

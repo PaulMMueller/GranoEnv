@@ -17,7 +17,7 @@ Created on Tue Oct 22 15:47:45 2019
 import os
 import numpy as np
 dir_name = '/p/tmp/pmueller/Masterarbeit/Paper_Data/'
-save_name = 'micro_paper_cas1_01'
+save_name = 'micro_paper_case3_02'
 
 raw_dir_list = os.listdir(dir_name)
 dir_list = []
