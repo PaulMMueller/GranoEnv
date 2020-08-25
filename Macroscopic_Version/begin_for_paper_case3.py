@@ -41,10 +41,10 @@ dir_name = '/home/pmueller/Masterarbeit/Paper_Data/output'
 pollution_threshold  = .6
 social_threshold = .4
 
-vulnerability = 0
+vulnerability = 1e-1
 farsightness = 1e1
-time_horizon = 0
-tau = 1e6
+time_horizon = 1e6
+tau = 1e0
 
 rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_41x41_grid.npy'#random_pairs_1000.npy'
 rands = np.load(rand_file)
@@ -55,7 +55,7 @@ number_of_random_pairs = len(rands)#  Has to be checked if correct file is linke
 delta_t = 1e-4#/time_scaler#/number_of_nodes
 integration_time = 20
 
-save_name = 'ana_paper_case1_41x41_01'#'Ana_test_N__th_1000'#'test'#'network_size'
+save_name = 'ana_paper_case3_41x41_01'#'Ana_test_N__th_1000'#'test'#'network_size'
 ####
 
 
@@ -78,7 +78,7 @@ for v in varying_param:
         command = 'srun -n 1 '
         command += f'~/Masterarbeit/GranoEnv/Macroscopic_Version/cluster_multiple_from_rand_ana.py '
         command += (
-               f'{pollution_threshold} '+
+               f'{pollution_threshold} '+ 
                f'{social_threshold} '+ 
                f'{vulnerability} '+
                f'{farsightness} '+ 

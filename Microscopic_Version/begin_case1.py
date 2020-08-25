@@ -28,13 +28,18 @@ def write_submit_file(file_name,dir_name,command):
             new_sub_file_str+=line
             
         new_sub_file_str+=command
-    with open(os.path.join(dir_name,'submit_ana.sh'),'w') as sub_file:
+    with open(os.path.join(dir_name,'submit_num.sh'),'w') as sub_file:
         sub_file.write(new_sub_file_str)
 
 calculate = True
-force_run = False
 dir_name = '/home/pmueller/Masterarbeit/Paper_Data/output'
 
+# Unique numerical parameters 
+number_of_nodes = 200
+average_degree =  10 #Here average degree (even integer)
+small_world_parameter = 1.0
+model = 'ER'
+verbose = True
 
 ###Same in the analytical version
 #Thresholds
@@ -45,8 +50,7 @@ vulnerability = 0
 farsightness = 1e1
 time_horizon = 0
 tau = 1e6
-
-rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_41x41_grid.npy'#random_pairs_1000.npy'
+rand_file  = '/home/pmueller/Masterarbeit/Paper_Data/input/ini_pairs_21x21.npy'
 rands = np.load(rand_file)
 number_of_random_pairs = len(rands)#  Has to be checked if correct file is linked
 
@@ -55,18 +59,17 @@ number_of_random_pairs = len(rands)#  Has to be checked if correct file is linke
 delta_t = 1e-4#/time_scaler#/number_of_nodes
 integration_time = 20
 
-save_name = 'ana_paper_case1_41x41_01'#'Ana_test_N__th_1000'#'test'#'network_size'
+save_name = 'micro_paper_case1_21x21_01'#'test'#'network_size'
+
 ####
 
-
-
-varying_param = [20]#,50,100,200]#,500,1000]
-approx_calc_length = 40
+approx_calc_length = 900
+varying_param = [0]
 j = 1
 for v in varying_param:
     
     
-    chuncks = 1 + (approx_calc_length*number_of_random_pairs)//7200 # Every chunck should run about 2 hours
+    chuncks = 1 + (number_of_random_pairs*approx_calc_length)//(10*3600) # Divided by hours times second in an hour
 
     start_end_ini = []
     for i in range(0,chuncks):  # Make an array of how many blocks of codes should be submitted and what they should have in them
@@ -76,42 +79,53 @@ for v in varying_param:
     for i in range(len(start_end_ini)-1):
 
         command = 'srun -n 1 '
-        command += f'~/Masterarbeit/GranoEnv/Macroscopic_Version/cluster_multiple_from_rand_ana.py '
+        command += f'/home/pmueller/Masterarbeit/GranoEnv/Microscopic_Version/cluster_multiple_from_rand.py '
         command += (
-               f'{pollution_threshold} '+
-               f'{social_threshold} '+ 
-               f'{vulnerability} '+
-               f'{farsightness} '+ 
-               f'{time_horizon} '+
-               f'{tau} ' +
-               f'{delta_t} '+ 
-               f'{integration_time} '+
-               f'{start_end_ini[i]} ' +
-               f'{start_end_ini[i+1]} '+
-               f'{save_name} '+ 
-               f'{rand_file} ')       
+                    f'{pollution_threshold} '+ 
+                    f'{social_threshold} '+ 
+                    f'{vulnerability} '+
+                    f'{farsightness} '+ 
+                    f'{time_horizon} '+ 
+                    f'{tau} '+
+                    f'{delta_t} '+
+                    f'{integration_time} '+
+                    f'{start_end_ini[i]} ' +
+                    f'{start_end_ini[i+1]} '+
+                    f'{number_of_nodes} '+
+                    f'{average_degree} '+
+                    f'{model} '+
+                    f'{small_world_parameter} '+
+                    f'{verbose} '+
+                    f'{save_name} '+
+                    f'{rand_file} ' )       
 
-        file_name = ( f'AnaTG'+
-                   f'_pt{pollution_threshold}'+
-                   f'_st{social_threshold}'+
-                   f'_v{vulnerability}'+ 
-                   f'_f{farsightness}'+
-                   f'_th{time_horizon}'+
-                   f'_tau{tau}'+
-                   f'_dt{delta_t}'+
-                   f'_it{integration_time}'+
-                   f'_fromIni{start_end_ini[i]}'+
-                   f'_toIni{start_end_ini[i+1]}'+
-                   f'_{save_name}')
-
+        file_name = ( f'TG'+
+                      f'_pt{pollution_threshold}'+
+                      f'_st{social_threshold}'+
+                      f'_v{vulnerability}'+
+                      f'_f{farsightness}'+
+                      f'_th{time_horizon}'+
+                      f'_tau{tau}'+
+                      f'_dt{delta_t}'+
+                      f'_it{integration_time}'+
+                      f'_fromIni{start_end_ini[i]}'+
+                      f'_toIni{start_end_ini[i+1]}_{save_name}'+
+                      f'_nn{number_of_nodes}'+
+                      f'_k{average_degree}'+
+                      f'_{model}'+
+                      f'_r{small_world_parameter}')
         print(f'Writing submit file for: {os.path.join(dir_name,file_name)}.out') 
         write_submit_file(file_name,dir_name,command)
         if calculate:
 
             print(f'Starting calculation number: {j}\n')
             os.chdir(dir_name)
-            p = p = subprocess.Popen(['sbatch', 'submit_ana.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            p = p = subprocess.Popen(['sbatch', 'submit_num.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             p.wait()
             
             j +=1
+
+
+
+
 

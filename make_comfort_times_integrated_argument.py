@@ -17,7 +17,7 @@ Created on Tue Oct 22 15:47:45 2019
 import os
 import numpy as np
 dir_name = '/p/tmp/pmueller/Masterarbeit/Paper_Data/'
-save_name = 'ana_paper_case1_01'
+save_name = 'micro_paper_case3_02'
 
 raw_dir_list = os.listdir(dir_name)
 dir_list = []
@@ -99,10 +99,11 @@ for file in files:
             
             # Check everything in the header
             if 'Nodes' in line:
-                splitted_line  = line.split(',')
-                nn = float(splitted_line[0].split()[-1])
-                smp = float(splitted_line[2].split()[-1])
-                lp = float(splitted_line[1].split()[-1])
+                nn = float(line.split(':')[-1])
+            if 'Degree' in line:
+                lp = float(line.split(':')[-1])
+            if 'Rewiring probability' in line:
+                smp = float(line.split(':')[-1])
             if 'Connected' in line:
                 con = str(line.split()[-1])
             if 'Pollution Threshold' in line:
@@ -125,6 +126,10 @@ for file in files:
                 y0 = float(line.split(':')[-1])
             if 'Initial Average Inactivity' in line:
                 x0 = float(line.split(':')[-1])
+       #     if 'Initial_Pollution' in line:
+       #         y0 = float(line.split(':')[-1][:-1])
+       #     if 'Initial_Average_Inactivity' in line:
+       #         x0 = float(line.split(' ')[-1][:-1])  
             if 'Time,' in line:
                 data_pointer = True 
     ### Data reading completed
