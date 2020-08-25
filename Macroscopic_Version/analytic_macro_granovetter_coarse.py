@@ -13,6 +13,9 @@ p- analog
 import numpy as np
 import os
 import sys
+import timeit
+
+start = timeit.default_timer()
 
 args = sys.argv
 print('Start Calc')
@@ -191,3 +194,5 @@ if  last_printed_time_step != T[-1]:
     print(f'{t:.{time_precision}f}, {x:.6f}, {y:.6f}')
     
 print(f'===CalculationEnded===')   
+stop = timeit.default_timer()
+print('Runtime: ', stop - start)
