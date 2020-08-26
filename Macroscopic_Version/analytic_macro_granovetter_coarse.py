@@ -124,9 +124,7 @@ def case11(X0,Y0,C,D,t):
         #old Y_t = (1-C/(C+D))+((X0-C/(C+D))/(C+D-1))*np.exp(-(C+D)*t) + ((C/(C+D)) -1 + (C/(C+D)-X0)/(C+D-1) + Y0)*np.exp(-t)
     return (X_t,Y_t)
 
-def give_the_slope(X0,Y0):
-    Y_dot = 1-X0-Y0
-    return Y_dot
+
 
 def make_dir(dir_name):
     if not os.path.isdir(dir_name):
