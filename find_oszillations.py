@@ -9,7 +9,7 @@ Created on Mon Aug 24 16:42:54 2020
 
 import os
 import numpy as np
-
+import timeit
 
 
 def get_average_oszill(in_t, in_x):
@@ -18,20 +18,21 @@ def get_average_oszill(in_t, in_x):
     periode = 0
     average_x = np.mean(in_x)
     pos = (average_x>in_x[0]) # True if first entry is below average and False if is above
-    
     temp_list = []
     t1 = 0
-    
+     
     for t, x  in zip(in_t, in_x):
-        t
-        if pos*(average_x>x):
+        if pos != (average_x>x):
+            pos = pos*-1
+            if temp_list == []:
+               continue
             periode += (t-t1)
-            amp += np.abs(np.mean(temp_list))
+            temp_list = np.array(temp_list)
+            amp += np.max(np.abs(temp_list-average_x))
             counter +=1
             temp_list = []    
             t1 = t
         temp_list.append(x)            
-
     amp = amp/(2*counter) # Because 2 as i count half periods
     periode= periode/(2*counter)
     freq = 1/periode
@@ -44,16 +45,16 @@ def get_average_oszill(in_t, in_x):
 out_file_name = 'oszillations.csv'
 dir_name = '/p/tmp/pmueller/Masterarbeit/Paper_Data/'
 
-pollution_threshold  = .6
-social_threshold = .4
-vulnerability = 1e-1
-farsightness = 1e1
-time_horizon = 1e6
+pt  = .6
+st = .4
+vul = 1e-1
+far = 1e1
+th = 1e6
 tau = 1e0
-delta_t = 1e-4
-integration_time = 20
+dt = 1e-4
+it = 20.0
 
-considered_time = 15 # From conisdered_time units steps are used
+considered_time = 19 # From conisdered_time units steps are used
 varying_param = np.logspace(0,6,7)
 save_name_add = 'ana_paper_theta_21x21_01'
 
@@ -61,23 +62,25 @@ raw_dir_list = os.listdir(dir_name)
 dir_list = []
 
 for v in varying_param:
-    time_horizon = v
+    th = v
     save_string = (f'AnaTG'+
-               f'_pt{pollution_threshold}'+
-               f'_st{social_threshold}'+
-               f'_v{vulnerability}'+
-               f'_f{farsightness}'+
-               f'_th{time_horizon}'+
+               f'_pt{pt}'+
+               f'_st{st}'+
+               f'_v{vul}'+
+               f'_f{far}'+
+               f'_th{th}'+
                f'_tau{tau}'+
-               f'_dt{delta_t}'+
-               f'_it{integration_time}')
+               f'_dt{dt}'+
+               f'_it{it}')
     save_name = save_string+save_name_add
+    #print(save_name)
     for d in raw_dir_list:
-        if save_name in d:
+        if save_name == d:
             dir_list.append(os.path.join(dir_name,d))
 
 
-
+#print(raw_dir_list)
+#print(dir_list)
 
 
 files = []
@@ -115,6 +118,8 @@ consT_l= []
 
 error_marker = False
 error_counter = 0
+
+aux = 0
 for file in files:
     print(f'Reading: {file}')
     data_pointer = False
@@ -126,14 +131,14 @@ for file in files:
     smp = -1
     lp  = -1
     con = -1
-    pt = -1  # Set everything to a unphyiscal value so that one can see which data is corrupted
-    st = -1
-    vul = -1
-    far = -1
+#    pt = -1  # Set everything to a unphyiscal value so that one can see which data is corrupted
+#    st = -1
+#    vul = -1
+#    far = -1
     th  = -1
-    tau = -1
-    dt  = -1
-    it  = -1
+#    tau = -1
+#    dt  = -1
+#    it  = -1
     y0  = -1
     x0  = -1
     amp = -1
@@ -159,29 +164,29 @@ for file in files:
                 Y.append(float(data[2]))               
             
             # Check everything in the header
-            if 'Nodes' in line:
-                splitted_line  = line.split(',')
-                nn = float(splitted_line[0].split()[-1])
-                smp = float(splitted_line[2].split()[-1])
-                lp = float(splitted_line[1].split()[-1])
-            if 'Connected' in line:
-                con = str(line.split()[-1])
-            if 'Pollution Threshold' in line:
-                pt = float(line.split(':')[-1])
-            if 'Social Threshold' in line:
-                st = float(line.split(':')[-1])
-            if 'Vulnerability' in line:
-                vul = float(line.split(':')[-1])
-            if 'Farsightedness' in line:
-                far = float(line.split(':')[-1])
+#            if 'Nodes' in line:
+#                splitted_line  = line.split(',')
+#                nn = float(splitted_line[0].split()[-1])
+#                smp = float(splitted_line[2].split()[-1])
+#                lp = float(splitted_line[1].split()[-1])
+#            if 'Connected' in line:
+#                con = str(line.split()[-1])
+#            if 'Pollution Threshold' in line:
+#                pt = float(line.split(':')[-1])
+#            if 'Social Threshold' in line:
+#                st = float(line.split(':')[-1])
+#            if 'Vulnerability' in line:
+#                vul = float(line.split(':')[-1])
+#            if 'Farsightedness' in line:
+#                far = float(line.split(':')[-1])
             if 'Time Horizon' in line:
                 th = float(line.split(':')[-1])
-            if 'Lifetime of the ecological dynamics' in line:
-                tau = float(line.split(':')[-1])
-            if 'Step Size' in line:
-                dt = float(line.split(':')[-1])
-            if 'Integration Time' in line:
-                it = float(line.split(':')[-1])
+#            if 'Lifetime of the ecological dynamics' in line:
+#                tau = float(line.split(':')[-1])
+#            if 'Step Size' in line:
+#                dt = float(line.split(':')[-1])
+#            if 'Integration Time' in line:
+#                it = float(line.split(':')[-1])
             if 'Initial Pollution' in line:
                 y0 = float(line.split(':')[-1])
             if 'Initial Average Inactivity' in line:
@@ -205,7 +210,8 @@ for file in files:
         ind= list(map(lambda i: i> considered_time, T)).index(True) 
         consT = T[ind]
         consT_l.append(consT)
-        amp , freq = get_average_oszill(T, X)
+        middle  = timeit.timeit()
+        amp , freq = get_average_oszill(T[ind:], X[ind:])
         amp_l.append(amp)
         freq_l.append(freq)
     except IndexError:
@@ -228,10 +234,12 @@ for file in files:
 
     dt_l.append(dt)
     it_l.append(it)
-   
-    
+    aux +=1
+    print(f'{aux} files processed')
+   # if aux > 5:
+   #     break
 print('Writing to file')
-with open(f'comfort_time_{save_name}.csv', 'w') as f:
+with open(f'{out_file_name}', 'w') as f:
     f.write('End X, End Y, '+
             'Ini X, Ini Y, ' +
             'Pollution Thres, '+
